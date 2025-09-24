@@ -1,20 +1,26 @@
 @import 'tailwindcss';
 
-*{
-  box-sizing: border-box;
-  margin:0;
-  padding:0;
-  font-size: 16px;
+@layer base {
+  *{
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+  }
+  
+  body{
+    min-height: 100vh;
+  }
+  
+  body div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-body{
-  min-height: 100vh;
-}
-
-body div{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+@font-face {
+  font-family:"SuperJoyful";
+  src: url("./assets/fonts/SuperJoyful.ttf");
 }
 
 @theme{
