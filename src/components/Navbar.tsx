@@ -1,10 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import chevron from "../assets/images/chevron.png";
 import Search from "./Search";
 import menu from "../assets/images/menu.png"
 import glass from "../assets/images/magnifying-glass.png"
 import close from "../assets/images/close.png";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -12,8 +12,9 @@ const Navbar = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   
   return (
-    <nav className={`mt-2 w-full text-sm flex items-center justify-between`}>
-      <span className={`${showMobileSearch ? "hidden" : "inline"} md:inline text-2xl font-[SuperJoyful]`}>pexels</span>
+    <nav className={`mt-2 w-full text-md flex items-center justify-between`}>
+      <Link to="/"><span className={`${showMobileSearch ? "hidden" : "inline"} mdz:inline text-3xl font-[SuperJoyful]`}>pexels</span></Link>
+      
       {!onHomePage && <div className={`min-w-0 relative  ${showMobileSearch ? "flex" : "hidden"} md:hidden flex-1`}>
         <Search/>
         {
