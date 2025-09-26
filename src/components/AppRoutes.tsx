@@ -4,12 +4,10 @@ import SearchResults from "./SearchResults"
 
 const AppRoutes = () => {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/search" element={<SearchResults/>}/>
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home/>}/>
+      <Route path="/search" element={<SearchResults/>}/>
+    </Routes>
   )
 }
 
