@@ -12,7 +12,7 @@ const Navbar = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   
   return (
-    <nav className={`z-20 sticky top-0 container-custom container-custom-md bg-white pt-2 w-full text-md flex items-center justify-between`}>
+    <nav className={`z-10 sticky top-0 container-custom md:container-custom-md bg-white pt-2 w-full text-md flex items-center justify-between`}>
       <Link to="/"><span className={`${showMobileSearch ? "hidden" : "inline"} mdz:inline text-3xl font-[SuperJoyful]`}>pexels</span></Link>
       
       {!onHomePage && <div className={`min-w-0 relative  ${showMobileSearch ? "flex" : "hidden"} md:hidden flex-1`}>
