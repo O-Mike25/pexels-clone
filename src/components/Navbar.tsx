@@ -8,7 +8,7 @@ import { useState } from "react";
 
 const Navbar = () => {
   const location = useLocation();
-  const onHomePage = location.pathname === "/"; 
+  const onHomePage = location.pathname === "/" || location.pathname === "/videos"; 
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   
   return (

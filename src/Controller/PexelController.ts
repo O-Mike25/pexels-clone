@@ -10,6 +10,26 @@ class PexelController {
     this.videosUrl = "https://api.pexels.com/videos";
     this.apiKey = apiKey;
   }
+
+  async getCuratedPhotos(page?: number, per_page?: number): Promise<PexelTypes.PhotosPack>{
+    const url = this.generateUrl(`${this.baseUrl}/curated`, {page, per_page})
+    try {
+      return (await this.fetchJson(url)) as PexelTypes.PhotosPack;
+    } catch (error: unknown) {
+      if (error instanceof Error) throw new Error(`Error fetching photos: ${error.message}`);
+      throw new Error(`Unknown error fetching photos: ${error}`);
+    }
+  }
+
+  async getPopularVideos(params: PexelTypes.getPopularVideosParams): Promise<PexelTypes.VideosPack>{
+    const url = this.generateUrl(`${this.videosUrl}/popular`, params)
+    try {
+      return (await this.fetchJson(url)) as PexelTypes.VideosPack;
+    } catch (error: unknown) {
+      if (error instanceof Error) throw new Error(`Error fetching photos: ${error.message}`);
+      throw new Error(`Unknown error fetching photos: ${error}`);
+    }
+  }
  
   async getPhotos(params: PexelTypes.GetMediasParams): Promise<PexelTypes.PhotosPack>{
     const url = this.generateUrl(`${this.baseUrl}/search`, params)

@@ -5,7 +5,10 @@ import SearchResults from "./SearchResults"
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/">
+        <Route index element={<Home />} />
+        <Route path="videos" element={<Home />} />
+      </Route>
       <Route path="search">
         <Route index element={<SearchResults />} />
         <Route path="videos" element={<SearchResults />} />
