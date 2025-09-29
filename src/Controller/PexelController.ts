@@ -10,8 +10,28 @@ class PexelController {
     this.videosUrl = "https://api.pexels.com/videos";
     this.apiKey = apiKey;
   }
+ 
+  async getPhotos(params: PexelTypes.GetMediasParams): Promise<PexelTypes.PhotosPack>{
+    const url = this.generateUrl(`${this.baseUrl}/search`, params)
+    try {
+      return (await this.fetchJson(url)) as PexelTypes.PhotosPack;
+    } catch (error: unknown) {
+      if (error instanceof Error) throw new Error(`Error fetching photos: ${error.message}`);
+      throw new Error(`Unknown error fetching photos: ${error}`);
+    }
+  }
+  
+  async getVideos(params: PexelTypes.GetMediasParams): Promise<PexelTypes.VideosPack>{
+    const url = this.generateUrl(`${this.videosUrl}/search`, params)
+    try {
+      return (await this.fetchJson(url)) as PexelTypes.VideosPack;
+    } catch (error: unknown) {
+      if (error instanceof Error) throw new Error(`Error fetching videos: ${error.message}`);
+      throw new Error(`Unknown error fetching videos: ${error}`);
+    }
+  }
 
-   public async getRandomCollectionsWithMedias( params: PexelTypes.GetRandomCollectionsParams): Promise<PexelTypes.Collection[]> {
+  public async getRandomCollectionsWithMedias( params: PexelTypes.GetRandomCollectionsParams): Promise<PexelTypes.Collection[]> {
     const { collectionPage, collectionsCount, mediaPage=1, mediaCount=15, mediaType="all", sortOrder="asc"  } = params;
 
     try {
@@ -51,7 +71,7 @@ class PexelController {
   }
 
   async getMediasByCollectionId(params: PexelTypes.GetMediasByCollectionParams): Promise<PexelTypes.CollectionMedias> {
-    const url = `${this.baseUrl}/collections/${params.collectionId}?type=${params.type}&sort=${params.sort}&page=${params.page}&per_page=${params.per_page}`;
+    const url = this.generateUrl(`${this.baseUrl}/collections/${params.collectionId}`, params);
     try {
       return (await this.fetchJson(url)) as PexelTypes.CollectionMedias;
     } catch (error: unknown) {
@@ -66,6 +86,14 @@ class PexelController {
       throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
     }
     return response.json();
+  }
+
+  private generateUrl(url: string, params: Record<string, any>): string {
+    const query = Object.entries(params)
+      .filter(([_, value]) => value !== null && value !== undefined && value !== "")
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+    return query ? `${url}?${query}` : url;
   }
 }
 

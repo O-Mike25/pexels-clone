@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import QuerySuggestionsController from "../Controller/QuerySuggestionsController";
 import PexelController from "../Controller/PexelController";
-import type { Collection, CollectionMedias, Photo } from "../Controller/PexelTypes";
+import type { Collection, Photo } from "../Controller/PexelTypes";
 
 const Search = () => {
   const [showSearchMenu, setShowSearchMenu] = useState(false);
@@ -37,7 +37,6 @@ const Search = () => {
       setCollections(randomCollections.filter((collection)=>{
         return collection.photos_count>=3;
       }));
-      console.log(collections);
     }
     fetchCollections();
   }, [searchTerm])

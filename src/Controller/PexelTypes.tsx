@@ -109,10 +109,49 @@ export type GetMediasByCollectionParams = {
 }
 
 export type GetRandomCollectionsParams = {
-    collectionPage?: number;                
-    collectionsCount?: number;               
-    mediaPage?: number;                       
-    mediaCount?: number;                 
-    mediaType?: "photos" | "videos" | "all"; 
-    sortOrder?: "asc" | "desc";
+  collectionPage?: number;                
+  collectionsCount?: number;               
+  mediaPage?: number;                       
+  mediaCount?: number;                 
+  mediaType?: "photos" | "videos" | "all"; 
+  sortOrder?: "asc" | "desc";
 };
+
+export type GetMediasParams = {
+  query: string,
+  orientation?: string,
+  size?: string,
+  color?: string,
+  locale?: string,
+  page?: number,
+  per_page?:number
+}
+
+export type PhotosPack = {
+  photos: Photo[],
+  url?: string,
+  page: number,
+  per_page: number,
+  total_results: number,
+  prev_page?: string,
+  next_page?: string,
+}
+
+export type VideosPack = {
+  videos: Video[],
+  url?: string,
+  page: number,
+  per_page: number,
+  total_results: number,
+  prev_page?: string,
+  next_page?: string,
+}
+
+export type getPopularVideosParams = {
+  min_width?: number,
+  min_height?: number,
+  min_duration?: number,
+  max_duration?: number,
+  page?: number,
+  per_page?: number
+}
