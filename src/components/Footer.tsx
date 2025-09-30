@@ -14,8 +14,22 @@ const Footer = () => {
         <div className="flex flex-col gap-8">
           <span className="font-medium text-3xl">Where stories come together.</span>
           <div>
-            <a className="mr-3 rounded-lg px-6 py-3 bg-gray-50 hover:bg-gray-100 cursor-pointer">Download on IOS</a>
-            <a className="mr-3 rounded-lg px-6 py-3 bg-gray-50 hover:bg-gray-100 cursor-pointer">Download on Android</a>
+            <a
+              href="https://apps.apple.com/app/pexels/id1434330413" 
+              className="mr-3 rounded-lg px-6 py-3 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download on IOS
+            </a>
+            <a 
+              href="https://play.google.com/store/apps/details?id=com.pexels.app" 
+              className="mr-3 rounded-lg px-6 py-3 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download on Android
+            </a>
           </div>
           <div className="flex flex-row gap-4 mt-5">
             <a
@@ -106,19 +120,22 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-row" >
-        <span className="font-medium">
+      <div 
+        className="pt-5 relative w-full flex flex-row flex-wrap gap-4 justify-between" 
+        style={{borderTop: "1px solid #f9fafb"}}
+      >
+        <span className="font-medium flex-1">
           <img className="inline w-4 mr-2" src={copyright} alt="" />
           2025 Pexels
         </span>
-        <div className="flex flex-row justify-center gap-4 flex-1">
+        <div className="flex flex-row justify-center gap-4">
           <span className="font-medium">Terms of Use</span>
           <span className="font-medium">Privacy Policy</span>
           <span className="font-medium">Licence</span>
           <span className="font-medium">Imprint</span>
           <span className="font-medium">Cookies Policy</span>
         </div>
-        <span className="cursor-pointer text-medium rounded-lg px-4 py-2 border border-gray-50 hover:bg-gray-50 font-medium">
+        <span className="cursor-pointer text-medium rounded-lg px-4 py-2 border border-gray-50 hover:bg-gray-50 font-medium ">
           <img className="inline w-4 mr-2" src={globe} alt="" />
           English
         </span>

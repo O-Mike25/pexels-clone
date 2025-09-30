@@ -169,7 +169,7 @@ const SearchResults = () => {
 
   return (
     <div className="relative container-custom md:container-custom-md w-full flex flex-row">
-      <div className={`pr-2 absolute left-0 top-0 z-20 overflow-y-auto pt-8 md:sticky md:top-16 md:h-[calc(100vh-60px)] h-[calc(100vh-50px)] ${open ? "mr-4 w-2/6" : "w-0 overflow-hidden"} transition-all duration-300 bg-white` } >
+      <div className={`pr-2 fixed left-0 top-[50px] z-20 overflow-y-auto pt-8 md:sticky md:top-16 md:h-[calc(100vh-60px)] h-[calc(100vh-50px)] ${open ? "mr-4 w-2/6" : "w-0 overflow-hidden"} transition-all duration-300 bg-white` } >
         {open && 
           <Accordion title="Orientation">
             <div className="flex flex-row gap-2 flex-wrap">
@@ -178,9 +178,9 @@ const SearchResults = () => {
           </Accordion>
         } 
       </div>
-      {open && windowSize<=768 && <div onClick={() => setOpen(!open)} className="z-10 absolute left-0 top-0 bg-black opacity-50 w-full h-[calc(100vh-50px)]"></div>}
+      {open && windowSize<=768 && <div onClick={() => setOpen(!open)} className="z-10 fixed left-0 top-[50px] bg-black opacity-50 w-full h-[calc(100vh-50px)]"></div>}
       <div className="font-medium w-full flex flex-col items-start">
-        {!location.pathname.includes("users") && <div className={`${windowSize<=768 ? "fixed p-0 w-fit top-[calc(100vh-100px)] right-[30px]" : "pt-8 pb-4 sticky top-12.5 w-full bg-white"}   `}>
+        {!location.pathname.includes("users") && <div className={`${windowSize<=768 ? "z-10 fixed p-0 w-fit top-[calc(100vh-100px)] right-[30px]" : "pt-8 pb-4 sticky top-12.5 w-full bg-white"}   `}>
           <button 
             className={`bg-white cursor-pointer px-4 py-2 rounded-lg border  flex flex-row items-center gap-1 hover:bg-gray-50 ${open ? "border-black" : "border-gray-100"}`}
             onClick={() => setOpen(!open)}  

@@ -12,6 +12,7 @@ const Search = () => {
   const [showSearchMenu, setShowSearchMenu] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchCategory, setSearchCategory] = useState("Photos")
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const navigate = useNavigate();
@@ -49,8 +50,8 @@ const Search = () => {
     >
       <div className="group relative">
         <button className="cursor-pointer hover:bg-gray-100 px-4 py-2 rounded-lg bg-white flex items-center gap-2">
-          <img width={18} src={image} alt="image" />
-          <span className="font-medium">Photos</span>
+          <img width={18} src={searchCategory=="Photos" ? image : play} alt="image" />
+          <span className="font-medium">{searchCategory}</span>
           <img
             className="group-hover:rotate-180"
             width={8}
@@ -59,11 +60,17 @@ const Search = () => {
           />
         </button>
         <div className="absolute -top-100 group-hover:top-10 transition-all duration-100 flex flex-col px-4 py-2 w-full  border border-gray-100 rounded-lg bg-white">
-          <div className="flex flex-row gap-2 hover:bg-gray-100 rounded-lg w-full text-center py-1 cursor-pointer">
+          <div 
+            className="flex flex-row gap-2 hover:bg-gray-100 rounded-lg w-full text-center py-1 cursor-pointer"
+            onClick={()=>setSearchCategory("Photos")}
+          >
             <img width={18} src={image} alt="image" />
             <span>Photos</span>
           </div>
-          <div className="flex flex-row gap-2 hover:bg-gray-100 rounded-lg w-full text-center py-1 cursor-pointer">
+          <div 
+            className="flex flex-row gap-2 hover:bg-gray-100 rounded-lg w-full text-center py-1 cursor-pointer"
+            onClick={()=>setSearchCategory("Videos")}
+          >
             <img width={18} src={play} alt="image" />
             <span>Videos</span>
           </div>
@@ -73,7 +80,7 @@ const Search = () => {
         value={searchTerm}
         className="min-w-0 outline-none mx-2 flex-1 p-2"
         type="text"
-        placeholder="Search for free photos"
+        placeholder={`Search for free ${searchCategory.toLowerCase()}`}
         onFocus={() => {
           setShowSearchMenu(true);
         }}
@@ -90,7 +97,7 @@ const Search = () => {
           }
         }}
       />
-      <Link to={`/search?query=${searchTerm}`}>
+      <Link to={searchCategory=="Photos" ? `/search?query=${searchTerm}` : `/search/videos?query=${searchTerm}`}>
         <div 
             className="p-3 hover:bg-gray-200 rounded-lg cursor-pointer"
             onClick={()=>{
