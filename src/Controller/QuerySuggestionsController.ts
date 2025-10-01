@@ -24,9 +24,9 @@ class QuerySuggestionsController {
       if(Array.isArray(data)) return data as string[];
       console.warn("Unexpected response", data);
       return [];
-    } catch (error) {
-      console.error("An error occurred when fetching query suggestions", error.message)
-      return [];
+    } catch (error: unknown) {
+      if (error instanceof Error) throw new Error(`Error fetching query suggestions: ${error.message}`);
+      throw new Error(`Unknown error fetching query suggestions: ${error}`);
     }
   }
 }

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import QuerySuggestionsController from "../Controller/QuerySuggestionsController";
 import PexelController from "../Controller/PexelController";
-import type { Collection, Photo } from "../Controller/PexelTypes";
+import type { Collection } from "../Controller/PexelTypes";
 
 const Search = () => {
   const [showSearchMenu, setShowSearchMenu] = useState(false);
@@ -29,7 +29,8 @@ const Search = () => {
   }
 
   useEffect(()=>{
-    const saved = JSON.parse(localStorage.getItem("recentSearches")) || [];
+    //const saved = localStorage.getItem("recentSearches");
+    //const saved = JSON.parse(localStorage.getItem("recentSearches")) || [];
   },[searchTerm])
 
   useEffect(() => {
@@ -88,13 +89,9 @@ const Search = () => {
           setShowSearchMenu(false);
         }}
         onChange={async (e) => {
-          try {
-            setSearchTerm(e.target.value);
-            let suggestions = await queryCtrl.getQuerySuggestions(searchTerm);
-            setSearchSuggestions(suggestions);
-          } catch (error) {
-            console.log(error.message);
-          }
+          setSearchTerm(e.target.value);
+          let suggestions = await queryCtrl.getQuerySuggestions(searchTerm);
+          setSearchSuggestions(suggestions);
         }}
       />
       <Link to={searchCategory=="Photos" ? `/search?query=${searchTerm}` : `/search/videos?query=${searchTerm}`}>
@@ -174,10 +171,6 @@ const Search = () => {
             <div className="flex flex-row flex-wrap gap-6">
               {collections.map((collection, index) => 
                 {
-                  const photos = collection.medias?.media.filter(
-                    (m): m is { type: "Photo" } & Photo => m.type === "Photo"
-                  );
-
                   return (
                     <div 
                       key={index} 
