@@ -13,7 +13,7 @@ const Footer = () => {
       <div className="w-full flex flex-row flex-wrap justify-between gap-10 ">
         <div className="flex flex-col gap-8">
           <span className="font-medium text-3xl">Where stories come together.</span>
-          <div>
+          <div className="flex flex-row flex-wrap gap-2">
             <a
               href="https://apps.apple.com/app/pexels/id1434330413" 
               className="mr-3 rounded-lg px-6 py-3 bg-gray-50 hover:bg-gray-100 cursor-pointer"
@@ -121,14 +121,14 @@ const Footer = () => {
         </div>
       </div>
       <div 
-        className="pt-5 relative w-full flex flex-row flex-wrap gap-4 justify-between" 
+        className="pt-5 relative w-full flex flex-row flex-wrap gap-4 justify-between items-center" 
         style={{borderTop: "1px solid #f9fafb"}}
       >
-        <span className="font-medium flex-1">
+        <span className="font-medium">
           <img className="inline w-4 mr-2" src={copyright} alt="" />
           2025 Pexels
         </span>
-        <div className="flex flex-row justify-center gap-4">
+        <div className="flex flex-row justify-center flex-1 gap-4">
           <span className="font-medium">Terms of Use</span>
           <span className="font-medium">Privacy Policy</span>
           <span className="font-medium">Licence</span>
