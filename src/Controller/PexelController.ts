@@ -110,14 +110,6 @@ class PexelController {
     }
     return response.json();
   }
-
-  private generateUrl(url: string, params: Record<string, any>): string {
-    const query = Object.entries(params)
-      .filter(([_, value]) => value !== null && value !== undefined && value !== "")
-      .map(([key, value]) => `${key}=${value}`)
-      .join("&");
-    return query ? `${url}?${query}` : url;
-  }
 }
 
 export default PexelController;
