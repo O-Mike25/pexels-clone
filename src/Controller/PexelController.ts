@@ -1,18 +1,21 @@
+import Utils from "../Utils";
 import * as PexelTypes from "./PexelTypes";
 
 class PexelController {
   private readonly baseUrl: string;
   private readonly videosUrl: string;
   private readonly apiKey: string;
+  private utils: Utils;
 
   constructor(apiKey: string) {
     this.baseUrl = "https://api.pexels.com/v1";
     this.videosUrl = "https://api.pexels.com/videos";
     this.apiKey = apiKey;
+    this.utils = new Utils();
   }
 
   async getCuratedPhotos(page?: number, per_page?: number): Promise<PexelTypes.PhotosPack>{
-    const url = this.generateUrl(`${this.baseUrl}/curated`, {page, per_page})
+    const url = this.utils.generateUrl(`${this.baseUrl}/curated`, {page, per_page})
     try {
       return (await this.fetchJson(url)) as PexelTypes.PhotosPack;
     } catch (error: unknown) {
@@ -22,7 +25,7 @@ class PexelController {
   }
 
   async getPopularVideos(params: PexelTypes.getPopularVideosParams): Promise<PexelTypes.VideosPack>{
-    const url = this.generateUrl(`${this.videosUrl}/popular`, params)
+    const url = this.utils.generateUrl(`${this.videosUrl}/popular`, params)
     try {
       return (await this.fetchJson(url)) as PexelTypes.VideosPack;
     } catch (error: unknown) {
@@ -32,7 +35,7 @@ class PexelController {
   }
  
   async getPhotos(params: PexelTypes.GetMediasParams): Promise<PexelTypes.PhotosPack>{
-    const url = this.generateUrl(`${this.baseUrl}/search`, params)
+    const url = this.utils.generateUrl(`${this.baseUrl}/search`, params)
     try {
       return (await this.fetchJson(url)) as PexelTypes.PhotosPack;
     } catch (error: unknown) {
@@ -42,7 +45,7 @@ class PexelController {
   }
   
   async getVideos(params: PexelTypes.GetMediasParams): Promise<PexelTypes.VideosPack>{
-    const url = this.generateUrl(`${this.videosUrl}/search`, params)
+    const url = this.utils.generateUrl(`${this.videosUrl}/search`, params)
     try {
       return (await this.fetchJson(url)) as PexelTypes.VideosPack;
     } catch (error: unknown) {
@@ -91,7 +94,7 @@ class PexelController {
   }
 
   async getMediasByCollectionId(params: PexelTypes.GetMediasByCollectionParams): Promise<PexelTypes.CollectionMedias> {
-    const url = this.generateUrl(`${this.baseUrl}/collections/${params.collectionId}`, params);
+    const url = this.utils.generateUrl(`${this.baseUrl}/collections/${params.collectionId}`, params);
     try {
       return (await this.fetchJson(url)) as PexelTypes.CollectionMedias;
     } catch (error: unknown) {

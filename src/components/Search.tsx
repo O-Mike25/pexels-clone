@@ -3,7 +3,7 @@ import glass from "../assets/images/magnifying-glass.png";
 import chevron from "../assets/images/chevron.png";
 import play from "../assets/images/play.png";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import QuerySuggestionsController from "../Controller/QuerySuggestionsController";
 import PexelController from "../Controller/PexelController";
 import type { Collection } from "../Controller/PexelTypes";
@@ -93,17 +93,30 @@ const Search = () => {
           let suggestions = await queryCtrl.getQuerySuggestions(searchTerm);
           setSearchSuggestions(suggestions);
         }}
+        onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          updateRecentSearches(searchTerm);
+          navigate(
+            searchCategory === "Photos"
+              ? `/search?query=${searchTerm}`
+              : `/search/videos?query=${searchTerm}`
+          );
+        }
+      }}
       />
-      <Link to={searchCategory=="Photos" ? `/search?query=${searchTerm}` : `/search/videos?query=${searchTerm}`}>
-        <div 
-            className="p-3 hover:bg-gray-200 rounded-lg cursor-pointer"
-            onClick={()=>{
-                updateRecentSearches(searchTerm);
-            }}
-        >
-            <img width={15} src={glass} alt="" />
-        </div>
-      </Link>
+      <div
+        className="p-3 hover:bg-gray-200 rounded-lg cursor-pointer"
+        onClick={() => {
+          updateRecentSearches(searchTerm);
+          navigate(
+            searchCategory === "Photos"
+              ? `/search?query=${searchTerm}`
+              : `/search/videos?query=${searchTerm}`
+          );
+        }}
+      >
+        <img width={15} src={glass} alt="search" />
+      </div>
       
       {showSearchMenu && searchTerm.length>0 && (
         <div className="absolute top-14 w-full bg-white border border-gray-50 rounded-lg py-2">

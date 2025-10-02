@@ -1,8 +1,9 @@
 import chevron from "../assets/images/chevron.png";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { type GetMediasParams, type Photo, type Video } from "../Controller/PexelTypes";
 import PexelController from "../Controller/PexelController";
+import Utils from "../Utils";
 
 type AccordionProps = {
   title: string;
@@ -10,7 +11,7 @@ type AccordionProps = {
 };
 
 const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="w-full flex flex-col gap-3">
       <div className="w-full flex justify-between items-center cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
@@ -31,20 +32,22 @@ const Accordion: React.FC<AccordionProps> = ({ title, children }) => {
 
 const SearchResults = () => {
   const [open, setOpen] = useState(false);
-  const [photos, setPhotos] = useState<[Photo[], number]>([[], 0]);
-  const [videos, setVideos] = useState<[Video[], number]>([[], 0]);
-  const [windowSize, setWindowSize] = useState(window.innerWidth);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("query");
-  const [mediasFilters, setMediasFilters] = useState<GetMediasParams>({
-    query:query!,
-    page:1
-  })
+  const orientationParam = queryParams.get("orientation");
+  const [mediasFilters, setMediasFilters] = useState<GetMediasParams>({ query:query!, page:1 });
+  const [photos, setPhotos] = useState<[Photo[], number]>([[], 0]);
+  const [photosUrl, setPhotosUrl] = useState(`/search?query=${query}`);
+  const [videosUrl, setVideosUrl] = useState(`/search/videos?query=${query}`);
+  const [videos, setVideos] = useState<[Video[], number]>([[], 0]);
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
   const loader = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const pexelCtrl = new PexelController(import.meta.env.VITE_PEXEL_API_KEY); 
+  const navigate = useNavigate();
 
+  const utils = new Utils();
+  const pexelCtrl = new PexelController(import.meta.env.VITE_PEXEL_API_KEY); 
   const getWindowSize = () => {
     setWindowSize(window.innerWidth);
   }
@@ -68,12 +71,30 @@ const SearchResults = () => {
   useEffect(() => {
     const fetchMedias = async () => {
       setIsLoading(true);
+      console.log(mediasFilters)
       const [pictures, vids] = await Promise.all([
         pexelCtrl.getPhotos(mediasFilters),
         pexelCtrl.getVideos(mediasFilters)
       ]);
-      setPhotos(prev => [[...prev[0], ...pictures.photos], pictures.total_results]);
-      setVideos(prev => [[...prev[0], ...vids.videos], vids.total_results]);
+      let filteredPhotos = pictures.photos;
+      let filteredVideos = vids.videos;
+
+      if (orientationParam === "landscape") {
+        filteredPhotos = filteredPhotos.filter(photo => photo.width > photo.height);
+        filteredVideos = filteredVideos.filter(video => {
+          const sdFile = video.video_files.find(file => file.quality === "sd" && file.file_type === "video/mp4");
+          return (sdFile && sdFile.width && sdFile.height) ? sdFile.width > sdFile.height : false;
+        });
+      } else if (orientationParam === "portrait") {
+        filteredPhotos = filteredPhotos.filter(photo => photo.width < photo.height);
+        filteredVideos = filteredVideos.filter(video => {
+          const sdFile = video.video_files.find(file => file.quality === "sd" && file.file_type === "video/mp4");
+          return (sdFile && sdFile.width && sdFile.height) ? sdFile.width < sdFile.height : false;
+        });
+      }
+
+      setPhotos(prev => [[...prev[0], ...filteredPhotos], pictures.total_results]);
+      setVideos(prev => [[...prev[0], ...filteredVideos], vids.total_results]);
       setIsLoading(false);
     };
 
@@ -103,22 +124,22 @@ const SearchResults = () => {
           <div className="w-full flex flex-col gap-4 items-start">
             <span className="text-3xl font-bold">Free {query} Videos</span>
             <div>
-              <Link to={`/search?query=${query}`}>
+              <Link to={photosUrl}>
                 <button className="mr-2 bg-white px-4 py-3 rounded-full cursor-pointer">Photos {photos[1]}</button>
               </Link>
-              <Link to={`/search/videos?query=${query}`}>
+              <Link to={videosUrl}>
                 <button className="hover:bg-gray-100 bg-black text-white px-4 py-3 rounded-full cursor-pointer">Videos {videos[1]}</button>
               </Link>
             </div>
             <div className="w-full py-8">
               <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-                {videos[0].map((video) => {
+                {videos[0].map((video, index) => {
                   const sdFile = video.video_files.find(
                     (file) => file.quality === "sd" && file.file_type === "video/mp4"
                   );
                   if (!sdFile) return null;
                   return (
-                    <div key={video.id} className="break-inside-avoid mb-4">
+                    <div key={index} className="break-inside-avoid mb-4">
                       <video
                         src={sdFile.link}
                         controls
@@ -140,18 +161,18 @@ const SearchResults = () => {
           <div className="w-full flex flex-col gap-4 items-start">
             <span className="text-3xl font-bold">Free {query} Photos</span>
             <div>
-              <Link to={`/search?query=${query}`}>
+              <Link to={photosUrl}>
                 <button className="mr-2 bg-black text-white px-4 py-3 rounded-full cursor-pointer">Photos {photos[1]}</button>
               </Link>
-              <Link to={`/search/videos?query=${query}`}>
+              <Link to={videosUrl}>
                 <button className="hover:bg-gray-100 bg-white px-4 py-3 rounded-full cursor-pointer">Videos {videos[1]}</button>
               </Link>
             </div>
             <div className="w-full py-8">
               <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
-                {photos[0].map((photo)=>{
+                {photos[0].map((photo, index)=>{
                   return (
-                    <div key={photo.id} className="break-inside-avoid mb-4">
+                    <div key={index} className="break-inside-avoid mb-4">
                       <img 
                         src={photo.src.medium} 
                         alt={"photos"}
@@ -173,7 +194,68 @@ const SearchResults = () => {
         {open && 
           <Accordion title="Orientation">
             <div className="flex flex-row gap-2 flex-wrap">
-              <button className="rounded-full bg-white hover:bg-gray-50 border border-gray-50 px-3 py-2">Any</button>
+              <button 
+                className={`cursor-pointer rounded-full bg-white hover:bg-gray-50 px-3 py-2 
+                  ${!orientationParam ? "border border-black" : "border border-gray-50"}`}
+                onClick={()=>{
+                  let url;
+                  const { page, ...rest } = mediasFilters;
+                  const updatedFilters = { ...rest, orientation: undefined };
+                  setPhotos([[], 0]);
+                  setVideos([[], 0]);
+                  setMediasFilters({page:1, ...updatedFilters});
+                  let photosLink = utils.generateUrl(`/search`, updatedFilters);
+                  let videosLink = utils.generateUrl(`/search/videos`, updatedFilters)
+                  url = location.pathname.includes("videos") ? videosLink : photosLink; 
+                  setPhotosUrl(photosLink);
+                  setVideosUrl(videosLink);
+                  navigate(url);
+                }}
+              >
+                Any
+              </button>
+
+              <button 
+                className={`cursor-pointer rounded-full bg-white hover:bg-gray-50 px-3 py-2 
+                  ${orientationParam === "landscape" ? "border border-black" : "border border-gray-50"}`}
+                onClick={()=>{
+                  let url;
+                  const { page, ...rest } = mediasFilters;
+                  const updatedFilters = { ...rest, orientation: "landscape" };
+                  setPhotos([[], 0]);
+                  setVideos([[], 0]);
+                  setMediasFilters({page:1, ...updatedFilters});
+                  let photosLink = utils.generateUrl(`/search`, updatedFilters);
+                  let videosLink = utils.generateUrl(`/search/videos`, updatedFilters)
+                  url = location.pathname.includes("videos") ? videosLink : photosLink; 
+                  setPhotosUrl(photosLink);
+                  setVideosUrl(videosLink);
+                  navigate(url);
+                }}
+              >
+                Horizontal
+              </button>
+
+              <button 
+                className={`cursor-pointer rounded-full bg-white hover:bg-gray-50 px-3 py-2 
+                  ${orientationParam === "portrait" ? "border border-black" : "border border-gray-50"}`}
+                onClick={()=>{
+                  let url;
+                  const { page, ...rest } = mediasFilters;
+                  const updatedFilters = { ...rest, orientation: "portrait" };
+                  setPhotos([[], 0]);
+                  setVideos([[], 0]);
+                  setMediasFilters({page:1, ...updatedFilters});
+                  let photosLink = utils.generateUrl(`/search`, updatedFilters);
+                  let videosLink = utils.generateUrl(`/search/videos`, updatedFilters)
+                  url = location.pathname.includes("videos") ? videosLink : photosLink; 
+                  setPhotosUrl(photosLink);
+                  setVideosUrl(videosLink);
+                  navigate(url);
+                }}
+              >
+                Vertical
+              </button>
             </div>
           </Accordion>
         } 
