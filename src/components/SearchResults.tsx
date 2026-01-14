@@ -65,7 +65,13 @@ const SearchResults = () => {
   }, [open])
 
   useEffect(() => {
-    if(query && query !== mediasFilters.query) setMediasFilters(prev => ({...prev, query, page:1}))
+    setPhotosUrl(`/search?query=${query}`);
+    setVideosUrl(`/search/videos?query=${query}`);
+    if(query && query !== mediasFilters.query) {
+      setPhotos([[], 0]);
+      setVideos([[], 0]);
+      setMediasFilters(prev => ({...prev, query, page:1}))
+    }
   }, [query]);
 
   useEffect(() => {
@@ -95,6 +101,7 @@ const SearchResults = () => {
 
       setPhotos(prev => [[...prev[0], ...filteredPhotos], pictures.total_results]);
       setVideos(prev => [[...prev[0], ...filteredVideos], vids.total_results]);
+      console.log("PHOTOS", photos);
       setIsLoading(false);
     };
 

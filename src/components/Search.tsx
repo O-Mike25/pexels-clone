@@ -43,6 +43,17 @@ const Search = () => {
     fetchCollections();
   }, [searchTerm])
 
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      if (searchTerm) {
+        const suggestions = await queryCtrl.getQuerySuggestions(searchTerm);
+        setSearchSuggestions(suggestions);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [searchTerm]);
+
   return (
     <div
       className={
@@ -88,21 +99,18 @@ const Search = () => {
         onBlur={() => {
           setShowSearchMenu(false);
         }}
-        onChange={async (e) => {
-          setSearchTerm(e.target.value);
-          let suggestions = await queryCtrl.getQuerySuggestions(searchTerm);
-          setSearchSuggestions(suggestions);
-        }}
+        onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          updateRecentSearches(searchTerm);
-          navigate(
-            searchCategory === "Photos"
-              ? `/search?query=${searchTerm}`
-              : `/search/videos?query=${searchTerm}`
-          );
-        }
-      }}
+          if (e.key === "Enter") {
+            updateRecentSearches(searchTerm);
+            navigate(
+              searchCategory === "Photos"
+                ? `/search?query=${searchTerm}`
+                : `/search/videos?query=${searchTerm}`
+            );
+            setShowSearchMenu(false);
+          }
+        }}
       />
       <div
         className="p-3 hover:bg-gray-200 rounded-lg cursor-pointer"
@@ -134,7 +142,11 @@ const Search = () => {
                     onMouseDown={() => {
                         setSearchTerm(text);
                         updateRecentSearches(text);
-                        navigate(`/search?query=${text}`);
+                        navigate(
+                          searchCategory === "Photos"
+                            ? `/search?query=${searchTerm}`
+                            : `/search/videos?query=${searchTerm}`
+                        );
                     }}
                 >
                 {isMatch ? (
@@ -221,7 +233,6 @@ const Search = () => {
                         />
                       </div>
 
-                      {/* Infos de la collection */}
                       <div className="flex flex-col items-start">
                         <span className="font-semibold text-gray-900">{collection.title}</span>
                         <span className="text-sm text-gray-500">{collection.photos_count} Photos</span>
