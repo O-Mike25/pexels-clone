@@ -110,7 +110,7 @@ const Home = () => {
 
   return (
     <div className="container-custom md:container-custom-md w-full mt-10 flex flex-col gap-10">
-      <div className="w-full flex flex-col md:flex-row justify-between items-center gap-5">
+      <div className="w-full flex flex-col lg:flex-row justify-between items-center gap-5">
           <div className="min-w-0 flex-1">
             <p className="mb-3 font-bold text-3xl">The best free stock photos, royalty free images & videos shared by creators.</p>
             <Search/>
